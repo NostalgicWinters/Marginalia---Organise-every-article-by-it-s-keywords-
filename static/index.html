@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marginalia — every paper, indexed by what matters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f5f5ef;
+      --paper-raised: #fbfbf7;
+      --ink: #1c1f1d;
+      --ink-soft: #5b6460;
+      --ink-faint: #8b938e;
+      --rule: #dad8cc;
+      --pen: #24444c;
+      --pen-soft: #3c626c;
+      --danger: #a83b2e;
+      --chip-1: #ffe066;
+      --chip-2: #9fe7c4;
+      --chip-3: #ffaec0;
+      --chip-4: #a8d2ee;
+      --chip-5: #d8c4f0;
+      --serif: "Newsreader", Georgia, serif;
+      --sans: "IBM Plex Sans", -apple-system, sans-serif;
+      --mono: "IBM Plex Mono", "SF Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    html,
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 0 0 6rem;
+    }
+
+    .wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ---------- Header ---------- */
+
+    header {
+      padding: 3rem 0 1.75rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 2.1rem;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--pen);
+    }
+
+    .tagline {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-soft);
+      font-size: 1.02rem;
+      margin: 0.35rem 0 0;
+    }
+
+    .whoami {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      align-items: flex-end;
+    }
+
+    .whoami label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+    }
+
+    .whoami input {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--rule);
+      background: var(--paper-raised);
+      color: var(--ink);
+      border-radius: 3px;
+      width: 11rem;
+      text-align: right;
+    }
+
+    .whoami input:focus {
+      outline: 2px solid var(--pen-soft);
+      outline-offset: 1px;
+    }
+
+    /* ---------- Dropzone ---------- */
+
+    .dropzone {
+      border: 1.5px dashed var(--rule);
+      border-radius: 6px;
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--paper-raised);
+      transition: border-color 0.15s ease, background 0.15s ease;
+      margin-bottom: 2.25rem;
+    }
+
+    .dropzone:hover,
+    .dropzone:focus-visible {
+      border-color: var(--pen-soft);
+      outline: none;
+    }
+
+    .dropzone.drag-over {
+      border-color: var(--pen);
+      background: #eef4f3;
+    }
+
+    .dropzone .headline {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .dropzone .sub {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      margin: 0;
+    }
+
+    .dropzone.busy .headline::after {
+      content: "";
+      display: inline-block;
+      width: 0.9em;
+    }
+
+    .dropzone input[type="file"] {
+      display: none;
+    }
+
+    .status-line {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      margin-top: 0.6rem;
+      min-height: 1em;
+    }
+
+    .status-line.error {
+      color: var(--danger);
+    }
+
+    .status-line.ok {
+      color: var(--pen);
+    }
+
+    /* ---------- Controls ---------- */
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    .controls input[type="search"] {
+      flex: 1 1 240px;
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--paper-raised);
+      color: var(--ink);
+    }
+
+    .controls select {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      padding: 0.5rem 0.6rem;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--paper-raised);
+      color: var(--ink-soft);
+    }
+
+    .controls input:focus,
+    .controls select:focus {
+      outline: 2px solid var(--pen-soft);
+      outline-offset: 1px;
+    }
+
+    /* ---------- Article list ---------- */
+
+    #count-line {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin: 0 0 0.9rem;
+    }
+
+    .card {
+      background: var(--paper-raised);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.15rem 1.3rem 1rem;
+      margin-bottom: 1rem;
+      animation: rise 0.3s ease both;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .card h2 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.15rem;
+      margin: 0;
+    }
+
+    .meta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    .filename {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      margin: 0.15rem 0 0.75rem;
+    }
+
+    .chips {
+      margin-bottom: 0.85rem;
+      line-height: 2.1;
+    }
+
+    .chip {
+      position: relative;
+      display: inline-block;
+      padding: 0.08em 0.45em;
+      margin: 0 0.35em 0.35em 0;
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      color: var(--ink);
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    .chip::before {
+      content: "";
+      position: absolute;
+      inset: 12% -6%;
+      background: var(--chip-color, var(--chip-1));
+      z-index: -1;
+      transform: rotate(var(--tilt, 0deg));
+      border-radius: 1px 5px 1px 5px;
+      opacity: 0.8;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: flex-end;
+      border-top: 1px solid var(--rule);
+      padding-top: 0.7rem;
+    }
+
+    .card-actions button,
+    .card-actions a {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: none;
+      border: 1px solid var(--rule);
+      color: var(--ink-soft);
+      padding: 0.35rem 0.7rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .card-actions a:hover {
+      border-color: var(--pen-soft);
+      color: var(--pen);
+    }
+
+    .card-actions button.delete:not(:disabled):hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .card-actions button.delete:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Empty / error states ---------- */
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--ink-faint);
+    }
+
+    .empty p.big {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--ink-soft);
+      margin: 0 0 0.4rem;
+    }
+
+    .empty p.small {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      margin: 0;
+    }
+
+    .banner {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      background: #fbe9e7;
+      color: var(--danger);
+      border: 1px solid #e5b3aa;
+      border-radius: 4px;
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 520px) {
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .whoami {
+        align-items: flex-start;
+      }
+
+      .whoami input {
+        text-align: left;
+        width: 100%;
+      }
+
+      .card-top {
+        flex-direction: column;
+      }
+
+      .meta {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrap">
+
+    <header>
+      <div class="header-row">
+        <div>
+          <h1>DRDO Articles </h1>
+          <p class="tagline">every paper, indexed by what matters</p>
+        </div>
+        <div class="whoami">
+          <label for="who">you are</label>
+          <input id="who" type="text" placeholder="your name" autocomplete="off" />
+        </div>
+      </div>
+    </header>
+
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload a PDF">
+      <p class="headline">Drop a PDF here, or click to browse</p>
+      <p class="sub">it'll be read and tagged with keywords automatically</p>
+      <p class="status-line" id="upload-status"></p>
+      <input type="file" id="file-input" accept="application/pdf" />
+    </div>
+
+    <div id="error-banner"></div>
+
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search titles &amp; keywords…" />
+      <select id="owner-filter">
+        <option value="">all uploaders</option>
+      </select>
+    </div>
+
+    <p id="count-line"></p>
+    <div id="results"></div>
+
+  </div>
+
+  <script>
+    const API = ""; // same-origin
+    const chipColors = ["var(--chip-1)", "var(--chip-2)", "var(--chip-3)", "var(--chip-4)", "var(--chip-5)"];
+
+    const els = {
+      who: document.getElementById("who"),
+      dropzone: document.getElementById("dropzone"),
+      fileInput: document.getElementById("file-input"),
+      uploadStatus: document.getElementById("upload-status"),
+      errorBanner: document.getElementById("error-banner"),
+      search: document.getElementById("search"),
+      ownerFilter: document.getElementById("owner-filter"),
+      countLine: document.getElementById("count-line"),
+      results: document.getElementById("results"),
+    };
+
+    // ---------- "who am I" (stand-in for auth) ----------
+
+    els.who.value = localStorage.getItem("marginalia_user") || "";
+    els.who.addEventListener("input", () => {
+      localStorage.setItem("marginalia_user", els.who.value.trim());
+      renderArticles(lastArticles); // re-evaluate delete permissions
+    });
+
+    function currentUser() {
+      return els.who.value.trim();
+    }
+
+    // ---------- helpers ----------
+
+    function debounce(fn, ms) {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    }
+
+    function hashString(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) {
+        h = (h * 31 + str.charCodeAt(i)) >>> 0;
+      }
+      return h;
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      if (isNaN(d)) return "";
+      return d.toLocaleDateString(undefined, {year: "numeric", month: "short", day: "numeric"});
+    }
+
+    function showError(msg) {
+      if (!msg) {els.errorBanner.innerHTML = ""; return;}
+      els.errorBanner.innerHTML = `<div class="banner">${escapeHtml(msg)}</div>`;
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+    }
+
+    // ---------- data fetching ----------
+
+    let lastArticles = [];
+    let knownOwners = new Set();
+
+    async function loadArticles() {
+      const q = els.search.value.trim();
+      const owner = els.ownerFilter.value;
+      showError("");
+
+      try {
+        let articles;
+        if (q) {
+          const res = await fetch(`${API}/articles/search?q=${encodeURIComponent(q)}`);
+          if (!res.ok) throw new Error("Search failed");
+          const data = await res.json();
+          articles = data.results;
+          if (owner) articles = articles.filter((a) => a.owner === owner);
+        } else {
+          const params = new URLSearchParams({limit: "100"});
+          if (owner) params.set("owner", owner);
+          const res = await fetch(`${API}/articles?${params}`);
+          if (!res.ok) throw new Error("Could not load articles");
+          const data = await res.json();
+          articles = data.results;
+        }
+        lastArticles = articles;
+        articles.forEach((a) => knownOwners.add(a.owner));
+        refreshOwnerOptions();
+        renderArticles(articles);
+      } catch (err) {
+        showError(err.message || "Something went wrong loading articles.");
+      }
+    }
+
+    function refreshOwnerOptions() {
+      const current = els.ownerFilter.value;
+      const opts = ['<option value="">all uploaders</option>']
+        .concat([...knownOwners].sort().map((o) => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`));
+      els.ownerFilter.innerHTML = opts.join("");
+      els.ownerFilter.value = current;
+    }
+
+    // ---------- rendering ----------
+
+    function renderArticles(articles) {
+      if (!articles || articles.length === 0) {
+        els.countLine.textContent = "";
+        els.results.innerHTML = `
+        <div class="empty">
+          <p class="big">No papers indexed yet.</p>
+          <p class="small">drop a pdf above to get started</p>
+        </div>`;
+        return;
+      }
+
+      els.countLine.textContent = `${articles.length} paper${articles.length === 1 ? "" : "s"}`;
+
+      els.results.innerHTML = articles.map(renderCard).join("");
+
+      els.results.querySelectorAll("[data-delete-id]").forEach((btn) => {
+        btn.addEventListener("click", () => handleDelete(btn.dataset.deleteId, btn.dataset.title));
+      });
+    }
+
+    function renderCard(a) {
+      const mine = currentUser() && a.owner === currentUser();
+      const chips = a.keywords
+        .filter(Boolean)
+        .map((kw, i) => {
+          const idx = hashString(kw) % chipColors.length;
+          const tilt = ((hashString(kw + i) % 5) - 2) * 0.7;
+          return `<span class="chip" style="--chip-color:${chipColors[idx]};--tilt:${tilt}deg">${escapeHtml(kw)}</span>`;
+        })
+        .join("");
+
+      return `
+      <article class="card">
+        <div class="card-top">
+          <h2>${escapeHtml(a.title)}</h2>
+          <span class="meta">${escapeHtml(a.owner)} · ${formatDate(a.uploaded_at)}</span>
+        </div>
+        <p class="filename">${escapeHtml(a.filename)}</p>
+        <div class="chips">${chips}</div>
+        <div class="card-actions">
+          <a href="${API}/articles/${a.id}/download">Download</a>
+          <button
+            class="delete"
+            data-delete-id="${a.id}"
+            data-title="${escapeHtml(a.title)}"
+            ${mine ? "" : "disabled"}
+            title="${mine ? "Delete this paper" : "Only " + escapeHtml(a.owner) + " can delete this"}"
+          >Delete</button>
+        </div>
+      </article>`;
+    }
+
+    // ---------- delete ----------
+
+    async function handleDelete(id, title) {
+      if (!confirm(`Delete "${title}"? This can't be undone.`)) return;
+      try {
+        const res = await fetch(`${API}/articles/${id}?user_id=${encodeURIComponent(currentUser())}`, {
+          method: "DELETE",
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.detail || "Delete failed");
+        }
+        lastArticles = lastArticles.filter((a) => a.id != id);
+        renderArticles(lastArticles);
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    // ---------- upload ----------
+
+    els.dropzone.addEventListener("click", () => els.fileInput.click());
+    els.dropzone.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {e.preventDefault(); els.fileInput.click();}
+    });
+
+    ["dragover", "dragenter"].forEach((evt) =>
+      els.dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        els.dropzone.classList.add("drag-over");
+      })
+    );
+    ["dragleave", "dragend", "drop"].forEach((evt) =>
+      els.dropzone.addEventListener(evt, () => els.dropzone.classList.remove("drag-over"))
+    );
+    els.dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) uploadFile(file);
+    });
+    els.fileInput.addEventListener("change", () => {
+      const file = els.fileInput.files[0];
+      if (file) uploadFile(file);
+      els.fileInput.value = "";
+    });
+
+    function setStatus(msg, kind) {
+      els.uploadStatus.textContent = msg || "";
+      els.uploadStatus.className = "status-line" + (kind ? " " + kind : "");
+    }
+
+    async function uploadFile(file) {
+      if (!file.name.toLowerCase().endsWith(".pdf")) {
+        setStatus("Only PDF files are supported.", "error");
+        return;
+      }
+      if (!currentUser()) {
+        setStatus("Enter your name in \u201cyou are\u201d first, so we know who uploaded this.", "error");
+        els.who.focus();
+        return;
+      }
+
+      const form = new FormData();
+      form.append("file", file);
+      form.append("user_id", currentUser());
+      form.append("title", file.name.replace(/\.pdf$/i, ""));
+
+      els.dropzone.classList.add("busy");
+      setStatus("Reading your PDF and finding keywords…");
+
+      try {
+        const res = await fetch(`${API}/articles/upload`, {method: "POST", body: form});
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Upload failed");
+        setStatus(`Indexed “${data.title}” with ${data.keywords.length} keywords.`, "ok");
+        knownOwners.add(data.owner);
+        refreshOwnerOptions();
+        lastArticles = [data, ...lastArticles];
+        renderArticles(lastArticles);
+      } catch (err) {
+        setStatus(err.message || "Upload failed.", "error");
+      } finally {
+        els.dropzone.classList.remove("busy");
+      }
+    }
+
+    // ---------- search wiring ----------
+
+    els.search.addEventListener("input", debounce(loadArticles, 300));
+    els.ownerFilter.addEventListener("change", loadArticles);
+
+    // ---------- init ----------
+
+    loadArticles();
+  </script>
+
+</body>
+
+</html>
