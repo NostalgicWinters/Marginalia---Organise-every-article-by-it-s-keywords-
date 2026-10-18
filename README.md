@@ -217,3 +217,7 @@ Contributions, issues, and feature requests are welcome.
 3. Commit your changes: `git commit -m "Add my feature"`
 4. Push to the branch: `git push origin feature/my-feature`
 5. Open a pull request
+
+## License
+ 
+Distributed under the [MIT License](https://choosealicense.com/licenses/mit/). See the [`LICENSE`](LICENSE) file for details.
