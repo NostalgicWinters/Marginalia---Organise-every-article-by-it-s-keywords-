@@ -219,5 +219,5 @@ Contributions, issues, and feature requests are welcome.
 5. Open a pull request
 
 ## License
- 
+
 Distributed under the [MIT License](https://choosealicense.com/licenses/mit/). See the [`LICENSE`](LICENSE) file for details.
